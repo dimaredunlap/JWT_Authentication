@@ -19,14 +19,12 @@ export const Login = () => {
         password: password,
       }),
     };
-    fetch(
-      "https://3001-dimaredunla-jwtauthenti-3gppv6sfhws.ws-us59.gitpod.io/api/token"
-    )
+    fetch(`${process.env.BACKEND_URL}/api/token`, opts)
       .then((resp) => {
         if (resp.status === 200) return resp.json();
         else alert("There has been an error");
       })
-      .then()
+      .then((data) => console.log(data))
       .catch((error) => {
         console.error("There was an error!!", error);
       });
