@@ -26,3 +26,18 @@ def login():
 
 
     return jsonify(response_body), 200
+
+@api.route('/signup', methods=['POST'])
+def post_user():
+    body = request.get_json(force=True)
+    new_user = User(email=body['email'], password=body['password'], is_active=True)
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify(new_user.serialize()), 201
+
+@api.route('/private',methods=["GET"])
+@jwt_required()
+def private():
+    user_token=get_jwt_identity()
+    user=User.query.get(user_token)
+    return jsonify(user.serialize()),200
