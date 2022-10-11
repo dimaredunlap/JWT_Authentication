@@ -1,53 +1,45 @@
-import React, { useContext, useState } from "react";
-import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
-import "../../styles/home.css";
+import React from "react";
+import { RegisterUser } from "../Requests/user.js";
+import { useNavigate } from "react-router-dom";
+import "../../styles/register.css"
 
-export const Register = () => {
-  const { store, actions } = useContext(Context);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+let emails = "";
+let passwords = "";
 
-  const handleClick = () => {
-    const opts = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
+const Register = () => {
+
+    let navigate = useNavigate();
+
+    const handleChange = async (e) => {
+        try {
+            const user = {
+                email: emails,
+                password: passwords
+            }
+            e.preventDefault()
+            await RegisterUser(user)
+            navigate("/login")
+
+        } catch { (err) => console.log(err) }
+
     };
-    fetch(`${process.env.BACKEND_URL}/api/token`, opts)
-      .then((resp) => {
-        if (resp.status === 200) return resp.json();
-        else alert("There has been an error");
-      })
-      .then((data) => console.log(data))
-      .catch((error) => {
-        console.error("There was an error!!", error);
-      });
-  };
 
-  return (
-    <div className="text-center mt-5">
-      <h1>Login</h1>
-      <div>
-        <input
-          type="test"
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={handleClick}>Login</button>
-      </div>
-    </div>
-  );
-};
+    return (
+        <div className="register-container justify-content-center m-auto p-auto mt-3">
+            <div className="title">Register</div>
+            <form onSubmit={handleChange}>
+                <label>Email:</label>
+                <input onChange={(e) => emails = e.target.value} className="form-control" id="email" type="text" name="email" />
+
+                <label>Password:</label>
+                <input onChange={(e) => passwords = e.target.value} className="form-control" id="password" type="text" name="password" />
+
+                <button className="register-button" type="submit">Submit</button>
+
+            </form>
+        </div>
+
+    )
+}
+
+export default Register;
